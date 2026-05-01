@@ -1,0 +1,39 @@
+export enum ErrorCode {
+  // Crypto
+  KEY_NOT_FOUND = 'KEY_NOT_FOUND',
+  SIGNATURE_INVALID = 'SIGNATURE_INVALID',
+  ENCRYPTION_FAILED = 'ENCRYPTION_FAILED',
+  DECRYPTION_FAILED = 'DECRYPTION_FAILED',
+
+  // Trust chain
+  TRUST_CHAIN_INVALID = 'TRUST_CHAIN_INVALID',
+  DID_RESOLUTION_FAILED = 'DID_RESOLUTION_FAILED',
+
+  // FHIR
+  FHIR_VALIDATION_FAILED = 'FHIR_VALIDATION_FAILED',
+  RECORD_IMMUTABLE = 'RECORD_IMMUTABLE',
+
+  // Mesh
+  PAYLOAD_UNSIGNED = 'PAYLOAD_UNSIGNED',
+  PAYLOAD_DUPLICATE = 'PAYLOAD_DUPLICATE',
+  SERIALIZATION_FAILED = 'SERIALIZATION_FAILED',
+
+  // Stellar
+  STELLAR_OFFLINE = 'STELLAR_OFFLINE',
+  ANCHOR_FAILED = 'ANCHOR_FAILED',
+  WALLET_NOT_CONNECTED = 'WALLET_NOT_CONNECTED',
+
+  // Config
+  ENV_MISSING = 'ENV_MISSING',
+}
+
+export class MediRelayError extends Error {
+  constructor(
+    public readonly errorCode: ErrorCode,
+    message: string,
+    public readonly cause?: unknown
+  ) {
+    super(message);
+    this.name = 'MediRelayError';
+  }
+}
