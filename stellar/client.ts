@@ -72,7 +72,8 @@ export class StellarClient {
   }
 
   private async submitAnchor(payload: AnchorPayload): Promise<AnchorResult> {
-    let account: StellarSdk.AccountResponse;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let account: any;
 
     try {
       account = await this.server.loadAccount(this.facilityKeypair.publicKey());
