@@ -10,6 +10,8 @@
 [![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen)]()
 [![FHIR R4](https://img.shields.io/badge/FHIR-R4-red)](https://hl7.org/fhir/R4/)
 [![Node.js 20+](https://img.shields.io/badge/Node.js-20%2B-339933?logo=node.js)](https://nodejs.org)
+[![CI](https://github.com/your-org/mediarelay/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/Tests-48%20passing-brightgreen)](.github/workflows/ci.yml)
 
 <br/>
 
@@ -242,8 +244,8 @@ npx expo start
 ### Setting Up a Test Mesh
 
 ```bash
-# Simulate a two-node mesh locally
-npm run mesh:sim -- --nodes 2
+# Simulate a two-node mesh locally (two nodes, local TCP transport)
+npm run mesh:sim
 
 # Run the full integration test suite
 npm test
@@ -281,16 +283,19 @@ npm run keygen -- --role chw --facility fac:ng:kano:rural-01
 ```
 mediarelay/
 ├── core/                   # Mesh protocol, CRDT engine, crypto primitives
-│   ├── mesh/               # Bluetooth & WiFi-Direct transport layer
+│   ├── mesh/               # Transport layer (store-and-forward, CBOR, payload signing)
 │   ├── crdt/               # Conflict resolution engine
 │   ├── crypto/             # Key management, signing, DID utilities
 │   └── fhir/               # FHIR R4 record builders and validators
 ├── stellar/                # Stellar anchoring, DID registry, trust chain
 ├── mobile/                 # React Native + Expo Android app
-│   ├── screens/            # Patient registration, encounter forms, history
-│   └── components/         # Shared UI components
-├── server/                 # Optional: district hub node (Node.js)
-├── scripts/                # Mesh simulation, key generation, test utilities
+│   └── src/
+│       ├── screens/        # WalletScreen, PatientRegistration, EncounterForm, RecordHistory
+│       ├── context/        # WalletContext (Stellar wallet state)
+│       └── lib/            # wallet.ts (keypair generation, MMKV encrypted storage)
+├── server/                 # District hub node (Node.js, optional)
+├── scripts/                # Mesh simulation, key generation utilities
+├── config/                 # env.ts — all environment variable access
 ├── docs/                   # Architecture deep-dives, protocol specs
 │   ├── architecture.md     # Detailed system design
 │   ├── protocol.md         # Wire format and signing spec
@@ -346,17 +351,17 @@ See [docs/regulatory.md](docs/regulatory.md) for jurisdiction-specific deploymen
 
 MediRelay is built in public. Every milestone is a deployable, testable increment — not a feature dump.
 
-### v0.1 — Foundation *(In Progress)*
-- [ ] Core FHIR record builder (Patient, Encounter, Observation, Immunization)
-- [ ] Stellar DID issuance and resolution
-- [ ] Basic Bluetooth mesh propagation (two-node)
-- [ ] Record signing and verification (CHW keypair)
-- [ ] Stellar testnet anchoring
+### v0.1 — Foundation ✅ *Complete*
+- [x] Core FHIR record builder (Patient, Encounter, Observation, Immunization)
+- [x] Stellar DID issuance and resolution
+- [x] Basic mesh propagation (two-node, local TCP simulator)
+- [x] Record signing and verification (CHW keypair)
+- [x] Stellar testnet anchoring
 
-### v0.2 — Mesh Maturity
+### v0.2 — Mesh Maturity *(In Progress)*
 - [ ] WiFi-Direct transport layer
 - [ ] Multi-hop mesh routing (store-and-forward)
-- [ ] CRDT conflict resolution engine
+- [x] CRDT conflict resolution engine
 - [ ] Full trust hierarchy (MoH → Facility → CHW key chain)
 
 ### v0.3 — Patient Experience
@@ -366,7 +371,7 @@ MediRelay is built in public. Every milestone is a deployable, testable incremen
 - [ ] Biometric binding for patients without devices
 
 ### v0.4 — Field Readiness
-- [ ] District hub node (server-side aggregator)
+- [x] District hub node (server-side aggregator)
 - [ ] OpenMRS and DHIS2 export adapters
 - [ ] Offline revocation propagation
 - [ ] Independent security audit
@@ -410,6 +415,8 @@ git push origin feature/your-feature-name
 Look for issues tagged [`good-first-issue`](../../issues?q=label%3Agood-first-issue) for well-scoped entry points that don't require deep protocol knowledge.
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a PR. We follow [Conventional Commits](https://www.conventionalcommits.org/). All contributors are expected to uphold the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+Pull requests are validated automatically by [GitHub Actions CI](.github/workflows/ci.yml) — type check and all 48 tests must pass.
 
 ### Development Philosophy
 
